@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+
+	<title>Roo Map</title>
+
+	<meta name="description" content="Offline Bonnaroo interactive map, planner, saved spots, and Roo Compass." />
+	<meta name="theme-color" content="#07090f" />
+
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-title" content="Roo Map" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+	<meta name="mobile-web-app-capable" content="yes" />
+	<meta name="format-detection" content="telephone=no" />
+
+	<link rel="manifest" href="manifest.json" />
+
+	<link rel="apple-touch-icon" href="./icon-192.png?v=2" />
+	<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png?v=2" />
+	<link rel="icon" type="image/png" sizes="512x512" href="./icon-512.png?v=2" />
+
+	<link rel="stylesheet" href="style.css?v=20260603-2333" />
+</head>
+
+<body>
+	<noscript>
+		<div style="padding: 20px; color: white; font-family: -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif;">
+			Roo Map needs JavaScript turned on to run.
+		</div>
+	</noscript>
+
+	<div class="app roo-app" data-roo-app="true">
+
+		<!-- MAP SCREEN -->
+		<main id="mapScreen" class="screen active-screen map-screen" data-screen="map" aria-hidden="false">
+			<section class="map-fullscreen-shell">
+
+				<header class="map-top-overlay">
+					<div class="map-brand">
+						<p class="eyebrow" data-active-map-eyebrow>Bonnaroo 2026</p>
+						<h1 data-active-map-title>Centeroo Map</h1>
+					</div>
+
+					<div class="map-top-actions">
+						<button class="icon-button" type="button" data-open-compass aria-label="Open Roo Compass">
+							🧭
+						</button>
+
+						<button class="icon-button" type="button" data-quick-location aria-label="Enable location">
+							📍
+						</button>
+					</div>
+				</header>
+
+				<section class="map-switcher" data-map-switcher aria-label="Map switcher">
+					<button class="map-switch-button is-active" type="button" data-map-target="centeroo">
+						Centeroo
+					</button>
+
+					<button class="map-switch-button" type="button" data-map-target="outeroo">
+						Outeroo
+					</button>
+				</section>
+
+				<section class="day-filter-row map-day-overlay" data-day-filters aria-label="Day filters"></section>
+
+				<section class="map-shell">
+					<div class="map-status-bar">
+						<button class="map-ui-toggle" type="button" data-toggle-map-ui aria-pressed="false">
+							Hide UI
+						</button>
+
+						<span data-location-status>Location off</span>
+					</div>
+
+					<div class="map-viewport" data-map-viewport>
+						<div class="map-content" data-map-content>
+							<img class="map-image" data-map-image src="./centeroo-map.png" alt="Bonnaroo Centeroo map" draggable="false" />
+
+							<svg class="stage-layer" data-stage-layer viewBox="0 0 100 100" preserveAspectRatio="none" aria-label="Clickable map areas"></svg>
+
+							<div class="amenity-layer" data-amenity-layer></div>
+							<div class="spot-layer" data-spot-layer></div>
+							<div class="gps-layer" data-gps-layer></div>
+						</div>
+					</div>
+
+					<div class="map-controls">
+						<button type="button" data-map-zoom-in aria-label="Zoom in">＋</button>
+						<button type="button" data-map-zoom-out aria-label="Zoom out">−</button>
+						<button type="button" data-map-reset aria-label="Reset map">◎</button>
+					</div>
+
+					<div class="map-action-row">
+						<button type="button" class="small-button" data-enable-location>📍 Me</button>
+						<button type="button" class="small-button" data-save-current-spot>Save Spot</button>
+						<button type="button" class="small-button" data-open-spots>Spots</button>
+						<button type="button" class="small-button" data-open-compass>Compass</button>
+					</div>
+				</section>
+
+				<section class="compass-card map-overlay-panel hidden" data-compass-card aria-hidden="true">
+					<div class="section-title-row">
+						<div>
+							<p class="eyebrow">Roo Compass</p>
+							<h2 data-compass-title>Choose a saved spot</h2>
+						</div>
+
+						<button type="button" class="icon-button" data-stop-compass aria-label="Stop compass">
+							✕
+						</button>
+					</div>
+
+					<div class="compass-display">
+						<div class="compass-arrow-wrap">
+							<div class="compass-arrow" data-compass-arrow>↑</div>
+						</div>
+
+						<div>
+							<h3 data-compass-distance>—</h3>
+							<p class="soft-text" data-compass-detail>
+								Save a spot, then tap Find.
+							</p>
+						</div>
+					</div>
+
+					<div class="compass-meta">
+						<span data-compass-gps>GPS: off</span>
+						<span data-compass-heading>Compass: off</span>
+					</div>
+				</section>
+
+				<section class="saved-spots-card map-drawer" data-spots-panel aria-hidden="true">
+					<div class="section-title-row">
+						<div>
+							<p class="eyebrow">Saved Spots</p>
+							<h2>Find My Spot</h2>
+						</div>
+
+						<button type="button" class="icon-button" data-close-spots aria-label="Close saved spots">
+							✕
+						</button>
+					</div>
+
+					<div class="saved-spots-list" data-saved-spots-list></div>
+				</section>
+
+			</section>
+		</main>
+
+		<!-- PLANNER SCREEN -->
+		<main id="plannerScreen" class="screen page-screen" data-screen="planner" aria-hidden="true">
+			<section class="screen-heading">
+				<p class="eyebrow">My Roo</p>
+				<h1>Planner</h1>
+				<p class="soft-text">
+					Your saved acts by day, grouped by Must, Maybe, and Skip so you can make decisions fast.
+				</p>
+			</section>
+
+			<section class="section-card planner-control-card">
+				<div class="section-title-row">
+					<div>
+						<p class="eyebrow">Planning Day</p>
+						<h2>Pick a Day</h2>
+					</div>
+
+					<button class="small-button" type="button" data-clear-picks>
+						Clear
+					</button>
+				</div>
+
+				<section class="day-filter-row planner-day-filter-row" data-planner-day-filters aria-label="Planner day filters"></section>
+
+				<div class="planner-summary-grid" data-planner-summary></div>
+			</section>
+
+			<section class="section-card">
+				<div class="section-title-row">
+					<div>
+						<p class="eyebrow">Decision Board</p>
+						<h2>My Picks</h2>
+					</div>
+				</div>
+
+				<div class="planner-list" data-planner-list></div>
+			</section>
+		</main>
+
+		<!-- SEARCH SCREEN -->
+		<main id="searchScreen" class="screen page-screen" data-screen="search" aria-hidden="true">
+			<section class="screen-heading">
+				<p class="eyebrow">Find Anything</p>
+				<h1>Search</h1>
+				<p class="soft-text">
+					Artists, stages, named places, and saved spots.
+				</p>
+			</section>
+
+			<section class="search-panel">
+				<label>
+					Search
+					<input data-search-input type="search" placeholder="Artist, stage, plaza, camp..." />
+				</label>
+
+				<label>
+					Day
+					<select data-search-day>
+						<option value="All">All</option>
+						<option value="Wednesday">Wednesday</option>
+						<option value="Thursday">Thursday</option>
+						<option value="Friday">Friday</option>
+						<option value="Saturday">Saturday</option>
+						<option value="Sunday">Sunday</option>
+					</select>
+				</label>
+			</section>
+
+			<section class="section-card">
+				<div class="section-title-row">
+					<div>
+						<p class="eyebrow">Results</p>
+						<h2>Matches</h2>
+					</div>
+				</div>
+
+				<div class="search-results" data-search-results></div>
+			</section>
+		</main>
+
+		<!-- TIMELINE SCREEN -->
+		<main id="timelineScreen" class="screen page-screen" data-screen="timeline" aria-hidden="true">
+			<section class="screen-heading">
+				<p class="eyebrow">Flow</p>
+				<h1>Timeline</h1>
+				<p class="soft-text">
+					A chronological route for the day you choose, with walking notes and open gaps.
+				</p>
+			</section>
+
+			<section class="section-card timeline-control-card">
+				<div class="section-title-row">
+					<div>
+						<p class="eyebrow">Timeline Day</p>
+						<h2>Choose Flow</h2>
+					</div>
+				</div>
+
+				<section class="day-filter-row timeline-day-filter-row" data-timeline-day-filters aria-label="Timeline day filters"></section>
+
+				<div class="timeline-summary-grid" data-timeline-summary></div>
+			</section>
+
+			<section class="section-card">
+				<div class="section-title-row">
+					<div>
+						<p class="eyebrow">My Route</p>
+						<h2>Roo Flow</h2>
+					</div>
+				</div>
+
+				<div class="timeline-list" data-timeline-list></div>
+			</section>
+		</main>
+
+		<!-- SETTINGS SCREEN -->
+		<main id="settingsScreen" class="screen page-screen" data-screen="settings" aria-hidden="true">
+			<section class="screen-heading">
+				<p class="eyebrow">App Control</p>
+				<h1>Settings</h1>
+				<p class="soft-text">
+					Backups, GPS, and offline tools.
+				</p>
+			</section>
+
+			<section class="section-card">
+				<div class="section-title-row">
+					<div>
+						<p class="eyebrow">Backup</p>
+						<h2>Data Tools</h2>
+					</div>
+				</div>
+
+				<div class="tool-button-stack">
+					<button class="secondary-button" type="button" data-export-data>
+						Export Roo Data
+					</button>
+
+					<label class="file-import-button">
+						Import Roo Data
+						<input data-import-data type="file" accept="application/json" />
+					</label>
+
+					<button class="secondary-button" type="button" data-copy-picks>
+						Copy My Picks
+					</button>
+
+					<button class="danger-button" type="button" data-reset-roo-data>
+						Reset App Data
+					</button>
+				</div>
+			</section>
+
+			<section class="section-card">
+				<div class="section-title-row">
+					<div>
+						<p class="eyebrow">GPS Calibration</p>
+						<h2>Map Accuracy</h2>
+					</div>
+				</div>
+
+				<p class="soft-text">
+					Stand at a known spot, tap that exact place on the active map, then save an anchor.
+				</p>
+
+				<div class="calibration-box" data-calibration-box></div>
+			</section>
+		</main>
+
+		<!-- BOTTOM NAVIGATION — PRODUCTION DOCK -->
+		<nav class="bottom-nav roo-bottom-nav" data-bottom-nav aria-label="App navigation">
+			<button class="nav-button active-nav" type="button" data-screen-target="map">
+				<span>🗺️</span>
+				Map
+			</button>
+
+			<button class="nav-button" type="button" data-screen-target="planner">
+				<span>⭐</span>
+				Planner
+			</button>
+
+			<button class="nav-button" type="button" data-screen-target="search">
+				<span>🔎</span>
+				Search
+			</button>
+
+			<button class="nav-button" type="button" data-screen-target="timeline">
+				<span>🕒</span>
+				Timeline
+			</button>
+
+			<button class="nav-button" type="button" data-screen-target="settings">
+				<span>⚙️</span>
+				Settings
+			</button>
+		</nav>
+
+		<!-- STAGE / PLACE BOTTOM SHEET -->
+		<section class="bottom-sheet" data-bottom-sheet aria-hidden="true">
+			<div class="bottom-sheet-card">
+				<div class="sheet-handle" aria-hidden="true"></div>
+
+				<div class="section-title-row">
+					<div>
+						<p class="eyebrow" data-sheet-eyebrow>Place</p>
+						<h2 data-sheet-title>Place</h2>
+						<p class="soft-text" data-sheet-subtitle></p>
+					</div>
+
+					<button class="icon-button" type="button" data-close-sheet aria-label="Close">
+						✕
+					</button>
+				</div>
+
+				<div data-sheet-body></div>
+			</div>
+		</section>
+
+		<div class="toast" data-toast></div>
+	</div>
+
+	<script src="data.js?v=20260603-2333"></script>
+	<script src="script.js?v=20260603-2333"></script>
+</body>
+
+</html>
