@@ -1,0 +1,11 @@
+RooMap
+Bugs:
+	◦	Planner and timeline are basically the same, they need differentiating functionality. You get me?
+	◦	On planner and timeline, you should be able to choose what day you’re looking at independently of the one that is selected on the map, and there should be day buttons on them just like the map page. You get me?
+	◦	Remove the zoom percentage from the map screen and place the hide UI button right where the zoom percentage was before, you get me? 
+	◦	Each day should have a different color, on the map screen buttons, and if there is an event or artist on that day, the border of the card for it should be the color for that day, you get me? Color coded days to make it easier. Wed is light blue, Thursday is purple, Friday is burnt orange,Saturday is pink, Sunday is dark teal. You get me? 
+
+Get back to me about these before doing anything. 
+
+
+Read all the things necessary and find how to address this note. 
